@@ -1,0 +1,20 @@
+<div class="container">
+  <h2>{{(rockets | async)?.mission_name }}</h2>
+
+
+  <div *ngFor="let ship of (rockets | async)?.ships; index as i">
+
+    <app-item
+     [ship]="ship"
+     [offset]="index"
+     [shipid]="i"
+      ></app-item>
+
+  </div>
+
+  <span class="prev" (click)="prevPage()">
+    < </span>
+      <span> {{indexPage}}</span>
+
+      <span class="next" (click)="nextPage()"> > </span>
+</div>
