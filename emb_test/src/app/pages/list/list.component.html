@@ -1,20 +1,27 @@
 <div class="container">
-  <h2>{{(rockets | async)?.mission_name }}</h2>
+  <div class="row">
 
+    <div class="col-9">
+      <h2>{{(rocket | async)?.mission_name }}</h2>
+      <div *ngFor="let ship of (rocket | async)?.ships; index as i">
+        <app-item [ship]="ship" [offset]="index" [shipid]="i"></app-item>
+      </div>
+      <div>
+        <span class="prev" (click)="prevPage()">
+          < </span>
+            <span> {{indexPage}}</span>
+            <span class="next" (click)="nextPage()"> > </span>
+      </div>
+    </div>
 
-  <div *ngFor="let ship of (rockets | async)?.ships; index as i">
-
-    <app-item
-     [ship]="ship"
-     [offset]="index"
-     [shipid]="i"
-      ></app-item>
-
+    <div class="col-3">
+      <h2>Filters</h2>
+      <h6>Nazvanie</h6>
+      <app-input type="text" placeholder="Digit your text"></app-input>
+      <h6>Ports</h6>
+      <app-checkboxlist [list]="listOfPorts"></app-checkboxlist>
+      <h6>Types</h6>
+      <app-radiolist [list]="listOfTypes"></app-radiolist>
+    </div>
   </div>
-
-  <span class="prev" (click)="prevPage()">
-    < </span>
-      <span> {{indexPage}}</span>
-
-      <span class="next" (click)="nextPage()"> > </span>
 </div>

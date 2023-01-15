@@ -1,43 +1,53 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, lastValueFrom } from 'rxjs';
 import { RocketsService } from 'src/app/services/rockets.service';
-import { Rocket } from 'src/types';
+import { Rocket, Ship } from 'src/types';
 
 @Component({
   selector: 'app-list',
   templateUrl: './list.component.html',
-  styleUrls: ['./list.component.scss']
+  styleUrls: ['./list.component.scss'],
 })
 export class ListComponent implements OnInit {
+  indexPage: number = 3;
+  rocket!: Observable<Rocket>;
+  listOfTypes!: string[];
+  listOfPorts!: string[];
 
-  indexPage:number = 3
-  rockets!:Observable<Rocket>
+  constructor(private rockServ: RocketsService) {}
 
-  constructor(private rockServ: RocketsService){
+  ngOnInit() {
+    this.rocket = this.rockServ.getAllRockets(this.index);
+    this.getFilters();
   }
 
-  ngOnInit(){
-    this.rockets = this.rockServ.getAllRockets(this.index)
+  getFilters() {
+    this.rocket.subscribe((e) => {
+      this.listOfPorts = [... new Set( e.ships.map((e) => e.home_port))];
+      this.listOfTypes = [... new Set(e.ships.map((e) => e.type))];
+    });
   }
 
-
-  nextPage(){
-     this.indexPage++
-     this.updatePage()
+  nextPage() {
+    this.indexPage++;
+    this.updatePageAndFilter();
   }
 
-  prevPage(){
-   this.indexPage--
-    this.updatePage()
+  prevPage() {
+    this.indexPage--;
+    this.updatePageAndFilter();
   }
 
-  get index(){
-    return this.indexPage
+  get index() {
+    return this.indexPage;
   }
 
-  updatePage(){
-    this.rockets = this.rockServ.getAllRockets(this.index)
-
+  updatePage() {
+    this.rocket = this.rockServ.getAllRockets(this.index);
   }
 
+  updatePageAndFilter() {
+    this.updatePage();
+    this.getFilters();
+  }
 }
